@@ -10,6 +10,11 @@
     <version>3.5.6</version>
 </parent>
 
+
+<properties>
+    <java.version>21</java.version>
+</properties>
+
 <dependencies>
 
     <dependency>
@@ -29,7 +34,18 @@
 
 </dependencies>
 
-<properties>
-    <java.version>21</java.version>
-</properties>
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+
 </project>
