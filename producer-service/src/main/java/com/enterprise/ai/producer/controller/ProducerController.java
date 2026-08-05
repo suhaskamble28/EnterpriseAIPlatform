@@ -5,57 +5,71 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.enterprise.ai.producer.model.OrderEvent;
+
 @RestController
 public class ProducerController {
 	
 	private int counter = 1;
 
 
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+ //   @Autowired
+   // private KafkaTemplate<String, String> kafkaTemplate;
+    
+   @Autowired
+   private KafkaTemplate<String, OrderEvent> kafkaTemplate;
 
     @GetMapping("/publish")
-    
     public String publish() {
 
-        String key = "USER-" + (counter % 3);
+        OrderEvent[] events = {
 
-        String message = "Message-" + counter++;
+                new OrderEvent(
+                        "MSG-004",
+                        "ORD-1001",
+                        "CUST-101",
+                        "ORDER_CREATED",
+                        2500),
 
-     /*   kafkaTemplate.send(
-                "user-events",
-                key,
-                message);  */
-        
-        kafkaTemplate.send(
-                "user-events",
-                key,
-                "FAIL-1");  
+                new OrderEvent(
+                        "MSG-005",
+                        "ORD-1002",
+                        "CUST-102",
+                        "PAYMENT_SUCCESS",
+                        4800),
 
-        return "Published : " + message;
+                new OrderEvent(
+                        "MSG-006",
+                        "ORD-1003",
+                        "CUST-103",
+                        "SHIPMENT_STARTED",
+                        3500),
+
+                // Duplicate Event
+                new OrderEvent(
+                        "MSG-004",
+                        "ORD-1002",
+                        "CUST-102",
+                        "PAYMENT_SUCCESS",
+                        4800)
+        };
+
+        for (OrderEvent event : events) {
+
+            kafkaTemplate.send(
+            		"order-events",
+                    event.getEventId(),
+                    event);
+
+            System.out.println("Published : " + event.getEventId());
+        }
+
+        return "Order Events Published Successfully";
     }
-    
-}  
-    
+}
     
     
     
     
- /*   public String publish() {
-    	
-    	  for (int i = 1; i <= 30; i++) {   // added for multiple messages
-
-              String message = "Message-" + i;
-
-             // kafkaTemplate.send("user-events", "Suhas started Day-46");
-              
-             kafkaTemplate.send("user-events", message);
-              
-            
-          System.out.println("Published : " + message);
-
-    	  }
-
-         return "20 Messages Published Successfully";
-    }
-}  */
+    
+ 
