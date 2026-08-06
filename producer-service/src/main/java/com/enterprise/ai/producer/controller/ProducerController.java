@@ -25,21 +25,21 @@ public class ProducerController {
         OrderEvent[] events = {
 
                 new OrderEvent(
-                        "MSG-004",
+                        "MSG-007",
                         "ORD-1001",
                         "CUST-101",
                         "ORDER_CREATED",
                         2500),
 
                 new OrderEvent(
-                        "MSG-005",
+                        "MSG-008",
                         "ORD-1002",
                         "CUST-102",
                         "PAYMENT_SUCCESS",
                         4800),
 
                 new OrderEvent(
-                        "MSG-006",
+                        "MSG-009",
                         "ORD-1003",
                         "CUST-103",
                         "SHIPMENT_STARTED",
@@ -47,7 +47,7 @@ public class ProducerController {
 
                 // Duplicate Event
                 new OrderEvent(
-                        "MSG-004",
+                        "MSG-007",
                         "ORD-1002",
                         "CUST-102",
                         "PAYMENT_SUCCESS",
@@ -65,6 +65,31 @@ public class ProducerController {
         }
 
         return "Order Events Published Successfully";
+    }
+    
+    @GetMapping("/publishBulk")
+    public String publishBulk() {
+
+        for (int i = 1; i <= 1000; i++) {
+
+            OrderEvent event = new OrderEvent(
+                    "MSG-" + i,
+                    "ORD-" + i,
+                    "CUST-" + (100 + i),
+                    "ORDER_CREATED",
+                    1000 + i);
+
+            kafkaTemplate.send(
+                    "order-events",
+                    event.getEventId(),
+                    event);
+        }
+
+        System.out.println("==================================");
+        System.out.println("Published 1000 Events Successfully");
+        System.out.println("==================================");
+
+        return "Published 1000 Events Successfully";
     }
 }
     

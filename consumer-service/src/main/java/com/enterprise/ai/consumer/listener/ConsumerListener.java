@@ -39,6 +39,12 @@ public class ConsumerListener {
 		System.out.println("Customer Id : " + event.getCustomerId());
 		System.out.println("Event Type  : " + event.getEventType());
 		System.out.println("Amount      : " + event.getAmount());
+		
+		System.out.println("\n==========================================");
+		System.out.println("Partition details");
+		System.out.println("Instance : " + instanceName);
+		System.out.println("Partition : " + record.partition());
+		System.out.println("Offset : " + record.offset());
 
 		if (processedMessages.contains(event.getEventId())) {
 
@@ -49,6 +55,13 @@ public class ConsumerListener {
 		}
 
 		processedMessages.add(event.getEventId());
+		
+		// Added for Monitor Lag
+		try {
+		    Thread.sleep(5000);
+		} catch (InterruptedException e) {
+		    Thread.currentThread().interrupt();
+		}
 
 		System.out.println("\nBusiness Processing Successful");
 		System.out.println("Saved Event ID : " + event.getEventId());
