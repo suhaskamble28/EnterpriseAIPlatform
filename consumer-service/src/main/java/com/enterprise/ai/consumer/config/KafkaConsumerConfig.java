@@ -1,6 +1,7 @@
 package com.enterprise.ai.consumer.config;
 
 import com.enterprise.ai.consumer.model.OrderEvent;
+import com.enterprise.ai.consumer.error.KafkaErrorHandlerConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,8 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
+	KafkaErrorHandlerConfig conf = new KafkaErrorHandlerConfig();
+	 
     @Bean
     public ConsumerFactory<String, OrderEvent> consumerFactory() {
     	
@@ -59,16 +63,21 @@ public class KafkaConsumerConfig {
                 new JsonDeserializer<>(OrderEvent.class));
     }
 
+   
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, OrderEvent>
-    kafkaListenerContainerFactory() {
-    	
-    	System.out.println("***** CUSTOM LISTENER FACTORY LOADED *****");
+    kafkaListenerContainerFactory(
+    				DefaultErrorHandler errorHandler) {
+
+        System.out.println("***** CUSTOM LISTENER FACTORY LOADED *****");
 
         ConcurrentKafkaListenerContainerFactory<String, OrderEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
+
+        // Connect our custom retry + DLT error handler
+        factory.setCommonErrorHandler(errorHandler);
 
         return factory;
     }

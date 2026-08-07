@@ -25,21 +25,21 @@ public class ProducerController {
         OrderEvent[] events = {
 
                 new OrderEvent(
-                        "MSG-007",
+                        "MSG-022",
                         "ORD-1001",
                         "CUST-101",
                         "ORDER_CREATED",
                         2500),
 
                 new OrderEvent(
-                        "MSG-008",
+                        "MSG-023",
                         "ORD-1002",
                         "CUST-102",
                         "PAYMENT_SUCCESS",
                         4800),
 
-                new OrderEvent(
-                        "MSG-009",
+           /*     new OrderEvent(
+                        "MSG-015",
                         "ORD-1003",
                         "CUST-103",
                         "SHIPMENT_STARTED",
@@ -47,17 +47,17 @@ public class ProducerController {
 
                 // Duplicate Event
                 new OrderEvent(
-                        "MSG-007",
+                        "MSG-013",
                         "ORD-1002",
                         "CUST-102",
                         "PAYMENT_SUCCESS",
-                        4800)
+                        4800)  */
         };
 
         for (OrderEvent event : events) {
 
             kafkaTemplate.send(
-            		"order-events",
+            		"order-events-day54",
                     event.getEventId(),
                     event);
 

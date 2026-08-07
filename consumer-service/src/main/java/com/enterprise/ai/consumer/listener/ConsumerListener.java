@@ -23,7 +23,7 @@ public class ConsumerListener {
 	private final Set<String> processedMessages = new HashSet<>();
 
 	@KafkaListener(
-	        topics = "order-events",
+	        topics = "order-events-day54",
 	        groupId = "group-1",
 	        containerFactory = "kafkaListenerContainerFactory")
 	
@@ -45,6 +45,12 @@ public class ConsumerListener {
 		System.out.println("Instance : " + instanceName);
 		System.out.println("Partition : " + record.partition());
 		System.out.println("Offset : " + record.offset());
+		
+		if ("MSG-022".equals(event.getEventId())) {
+
+		    System.out.println("Business Processing Failed...");
+		    throw new RuntimeException("Simulated Business Failure");
+		}
 
 		if (processedMessages.contains(event.getEventId())) {
 
