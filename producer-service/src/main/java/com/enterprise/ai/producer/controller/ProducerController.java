@@ -70,7 +70,7 @@ public class ProducerController {
     @GetMapping("/publishBulk")
     public String publishBulk() {
 
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 106; i <= 110; i++) {
 
             OrderEvent event = new OrderEvent(
                     "MSG-" + i,
@@ -80,16 +80,16 @@ public class ProducerController {
                     1000 + i);
 
             kafkaTemplate.send(
-                    "order-events",
+                    "order-events-day54",
                     event.getEventId(),
                     event);
         }
 
         System.out.println("==================================");
-        System.out.println("Published 1000 Events Successfully");
+        System.out.println("Published 10 Events Successfully");
         System.out.println("==================================");
 
-        return "Published 1000 Events Successfully";
+        return "Published 10 Events Successfully";
     }
 }
     

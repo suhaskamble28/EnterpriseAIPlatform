@@ -51,6 +51,12 @@ public class KafkaProducerConfig {
         config.put(
                 JsonSerializer.ADD_TYPE_INFO_HEADERS,
                 false);
+        
+     // Added for producer transaction ID
+        
+      /*  config.put(
+                ProducerConfig.TRANSACTIONAL_ID_CONFIG,
+                "producer-service-tx-");  */
 
         return new DefaultKafkaProducerFactory<>(config);
     }

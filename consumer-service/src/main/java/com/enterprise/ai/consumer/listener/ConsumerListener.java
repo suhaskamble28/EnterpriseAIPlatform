@@ -11,8 +11,11 @@ import com.enterprise.ai.consumer.model.OrderEvent;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 
+
 import java.util.HashSet;
 import java.util.Set;
+import java.time.Duration;
+import java.time.Instant;
 
 
 @Component
@@ -39,14 +42,14 @@ public class ConsumerListener {
 		System.out.println("Customer Id : " + event.getCustomerId());
 		System.out.println("Event Type  : " + event.getEventType());
 		System.out.println("Amount      : " + event.getAmount());
-		
+		System.out.println("Received Time : " + java.time.LocalDateTime.now());
 		System.out.println("\n==========================================");
 		System.out.println("Partition details");
 		System.out.println("Instance : " + instanceName);
 		System.out.println("Partition : " + record.partition());
 		System.out.println("Offset : " + record.offset());
 		
-		if ("MSG-022".equals(event.getEventId())) {
+		if ("MSG-02222".equals(event.getEventId())) {
 
 		    System.out.println("Business Processing Failed...");
 		    throw new RuntimeException("Simulated Business Failure");
@@ -62,12 +65,21 @@ public class ConsumerListener {
 
 		processedMessages.add(event.getEventId());
 		
+		Instant startTime = Instant.now();
+	
 		// Added for Monitor Lag
 		try {
-		    Thread.sleep(5000);
+		    Thread.sleep(7000);
 		} catch (InterruptedException e) {
 		    Thread.currentThread().interrupt();
-		}
+		}  
+		
+		Instant endTime = Instant.now();
+
+		long processingTime =
+		        Duration.between(startTime, endTime).toMillis();
+
+		System.out.println("Processing Duration : " + processingTime + " ms");
 
 		System.out.println("\nBusiness Processing Successful");
 		System.out.println("Saved Event ID : " + event.getEventId());
