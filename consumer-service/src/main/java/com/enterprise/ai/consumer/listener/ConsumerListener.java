@@ -69,7 +69,7 @@ public class ConsumerListener {
 	
 		// Added for Monitor Lag
 		try {
-		    Thread.sleep(7000);
+		    Thread.sleep(9000);
 		} catch (InterruptedException e) {
 		    Thread.currentThread().interrupt();
 		}  

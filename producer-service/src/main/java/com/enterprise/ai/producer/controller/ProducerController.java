@@ -70,7 +70,7 @@ public class ProducerController {
     @GetMapping("/publishBulk")
     public String publishBulk() {
 
-        for (int i = 106; i <= 110; i++) {
+        for (int i = 131; i <= 140; i++) {
 
             OrderEvent event = new OrderEvent(
                     "MSG-" + i,
