@@ -19,3 +19,9 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
