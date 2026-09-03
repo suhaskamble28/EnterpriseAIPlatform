@@ -1,19 +1,10 @@
 from fastapi import FastAPI
 
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-
 from app.telemetry import configure_telemetry
 
 from opentelemetry import trace
 
 
-# ---------------------------------------------------------
-# OpenTelemetry
-# ---------------------------------------------------------
-
-configure_telemetry()
-
-tracer = trace.get_tracer("resolveai")
 # ---------------------------------------------------------
 # ResolveAI Application
 # ---------------------------------------------------------
@@ -24,10 +15,12 @@ app = FastAPI(
 
 
 # ---------------------------------------------------------
-# OpenTelemetry FastAPI Instrumentation
+# OpenTelemetry Configuration
 # ---------------------------------------------------------
 
-FastAPIInstrumentor.instrument_app(app)
+configure_telemetry(app)
+
+tracer = trace.get_tracer("resolveai")
 
 
 # ---------------------------------------------------------
@@ -46,8 +39,9 @@ def root():
 
 @app.get("/health")
 def health():
- with tracer.start_as_current_span("resolveai.health.check"):
 
-    return {
-        "status": "UP"
-    }
+    with tracer.start_as_current_span("resolveai.health.check"):
+
+        return {
+            "status": "UP"
+        }

@@ -1,11 +1,14 @@
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import ConsoleSpanExporter
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+    OTLPSpanExporter
+)
 
 
-def configure_telemetry():
+def configure_telemetry(app):
 
     resource = Resource.create({
         "service.name": "resolveai",
@@ -17,12 +20,22 @@ def configure_telemetry():
         resource=resource
     )
 
-    tracer_provider.add_span_processor(
-        SimpleSpanProcessor(
-            ConsoleSpanExporter()
-        )
+    otlp_exporter = OTLPSpanExporter(
+        endpoint="http://localhost:4318/v1/traces"
     )
 
-    trace.set_tracer_provider(tracer_provider)
+    span_processor = BatchSpanProcessor(
+        otlp_exporter
+    )
 
-    return tracer_provider
+    tracer_provider.add_span_processor(
+        span_processor
+    )
+
+    trace.set_tracer_provider(
+        tracer_provider
+    )
+
+    FastAPIInstrumentor.instrument_app(app)
+
+    return trace.get_tracer("resolveai")
