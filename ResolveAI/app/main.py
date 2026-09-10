@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from app.telemetry import configure_telemetry
 
 from opentelemetry import trace
+
+from services.splunk_service import SplunkService
+
+from services.evidence_provider import EvidenceProvider
 
 
 # ---------------------------------------------------------
@@ -21,6 +25,13 @@ app = FastAPI(
 configure_telemetry(app)
 
 tracer = trace.get_tracer("resolveai")
+
+
+# ---------------------------------------------------------
+# Splunk Integration
+# ---------------------------------------------------------
+
+evidence_provider: EvidenceProvider = SplunkService()
 
 
 # ---------------------------------------------------------
@@ -45,3 +56,22 @@ def health():
         return {
             "status": "UP"
         }
+
+
+@app.get("/resolve/{transaction_id}")
+def resolve_transaction(transaction_id: str):
+
+    try:
+        result = evidence_provider.search_transaction(transaction_id)
+
+        return {
+            "transaction_id": transaction_id,
+            "source": "Splunk",
+            "evidence": result
+        }
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=str(exc)
+        )
