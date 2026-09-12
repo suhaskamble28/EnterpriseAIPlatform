@@ -6,3 +6,4 @@ opentelemetry-exporter-otlp
 opentelemetry-exporter-otlp-proto-http
 opentelemetry-instrumentation-fastapi
 opentelemetry-instrumentation-requests
+redis==8.1.0

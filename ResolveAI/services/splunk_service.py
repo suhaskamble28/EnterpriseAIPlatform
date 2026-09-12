@@ -20,6 +20,7 @@ class SplunkService(EvidenceProvider):
         search = (
             'search index=resolveai '
             f'transaction_id="{transaction_id}" '
+            'earliest=-30d latest=now '
             '| table transaction_id trace_id business_domain '
             'business_operation business_channel service '
             'business_outcome failure_category failure_type '
